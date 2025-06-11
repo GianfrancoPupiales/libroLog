@@ -34,5 +34,10 @@
     "__tests__/**/*.tsx",
     "**/*.test.ts",
     "**/*.test.tsx"
+  ],
+  "exclude": [
+    "jest.setup.ts",
+    "**/*.test.ts",
+    "**/*.test.tsx"
   ]
 }
