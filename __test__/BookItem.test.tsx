@@ -20,6 +20,7 @@ describe('BookItem Component', () => {
     const mockUpdateBook = jest.fn()
 
     it('renders the book details correctly', () => {
+        // eslint-disable-next-line react/react-in-jsx-scope
         render(<BookItem book={mockBook} updateBook={mockUpdateBook} />)
 
         expect(screen.getByText('Test Book')).toBeInTheDocument()
@@ -30,6 +31,7 @@ describe('BookItem Component', () => {
     })
 
     it('allows editing and saving changes', async () => {
+        // eslint-disable-next-line react/react-in-jsx-scope
         render(<BookItem book={mockBook} updateBook={mockUpdateBook} />)
 
         // 1. Entrar en modo edición
@@ -62,6 +64,7 @@ describe('BookItem Component', () => {
     })
 
     it('cancels changes when cancel button is clicked', async () => {
+        // eslint-disable-next-line react/react-in-jsx-scope
         render(<BookItem book={mockBook} updateBook={mockUpdateBook} />)
 
         // Entrar en modo edición
