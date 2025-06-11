@@ -63,26 +63,35 @@ const BookItem: React.FC<BookItemProps> = ({ book, updateBook }) => {
             <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
                 {editing ? (
                     <Stack direction="row" spacing={1}>
-                        <IconButton size="small" color="primary" onClick={handleSave}>
+                        <IconButton
+                            size="small"
+                            color="primary"
+                            aria-label="guardar"
+                            onClick={handleSave}
+                        >
                             <Save />
                         </IconButton>
-                        <IconButton size="small" onClick={handleCancel}>
+                        <IconButton
+                            size="small"
+                            aria-label="cancelar"
+                            onClick={handleCancel}
+                        >
                             <Close />
                         </IconButton>
                     </Stack>
                 ) : (
-                    <IconButton size="small" onClick={() => setEditing(true)}>
+                    <IconButton
+                        size="small"
+                        aria-label="editar"
+                        onClick={() => setEditing(true)}
+                    >
                         <Edit />
                     </IconButton>
                 )}
             </Box>
 
             <CardContent sx={{ flexGrow: 1 }}>
-                <Stack
-                    spacing={2}
-                    alignItems="center"
-                    sx={{ width: '100%' }}
-                >
+                <Stack spacing={2} alignItems="center" sx={{ width: '100%' }}>
                     {/* Title */}
                     <Typography variant="h6" fontWeight="bold" align="center">
                         {book.title}
@@ -107,8 +116,9 @@ const BookItem: React.FC<BookItemProps> = ({ book, updateBook }) => {
                     {/* Status */}
                     {editing ? (
                         <FormControl fullWidth>
-                            <InputLabel>Estado</InputLabel>
+                            <InputLabel id={`estado-label-${book.id}`}>Estado</InputLabel>
                             <Select
+                                labelId={`estado-label-${book.id}`}
                                 label="Estado"
                                 value={status}
                                 onChange={e => setStatus(e.target.value as Book['status'])}

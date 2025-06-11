@@ -21,7 +21,18 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+
+    /* Carga global de tipos de Jest y jest-dom */
+    "types": ["jest", "@testing-library/jest-dom"]
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "jest.setup.ts",          // Para que se cargue tu setup de jest-dom
+    "global.d.ts",            // Para las referencias a jest y jest-dom
+    "__tests__/**/*.ts",
+    "__tests__/**/*.tsx",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
 }
