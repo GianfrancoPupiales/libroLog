@@ -1,4 +1,3 @@
-// src/components/BookForm.tsx
 import React, { useState } from 'react'
 import { Box, TextField, Button } from '@mui/material'
 import { Book } from '../types'
@@ -10,14 +9,27 @@ interface BookFormProps {
 const BookForm: React.FC<BookFormProps> = ({ addBook }) => {
     const [title, setTitle] = useState('')
     const [totalPages, setTotalPages] = useState('')
+    const [errors, setErrors] = useState<{ title?: string; totalPages?: string }>({})
+
+    const validate = () => {
+        const errs: typeof errors = {}
+        if (!title.trim()) errs.title = 'El título es obligatorio'
+        if (!totalPages.trim()) {
+            errs.totalPages = 'El total de páginas es obligatorio'
+        } else if (isNaN(Number(totalPages))) {
+            errs.totalPages = 'Debe ser un número'
+        }
+        setErrors(errs)
+        return Object.keys(errs).length === 0
+    }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
-        if (!title || !totalPages) return
+        if (!validate()) return
 
         addBook({
             id: Date.now(),
-            title,
+            title: title.trim(),
             totalPages: Number(totalPages),
             pagesRead: 0,
             status: 'Por leer',
@@ -27,12 +39,14 @@ const BookForm: React.FC<BookFormProps> = ({ addBook }) => {
 
         setTitle('')
         setTotalPages('')
+        setErrors({})
     }
 
     return (
         <Box
             component="form"
             onSubmit={handleSubmit}
+            noValidate
             sx={{
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -49,7 +63,8 @@ const BookForm: React.FC<BookFormProps> = ({ addBook }) => {
                 label="Título del libro"
                 value={title}
                 onChange={e => setTitle(e.target.value)}
-                required
+                error={!!errors.title}
+                helperText={errors.title}
                 sx={{ flex: '1 1 200px' }}
             />
             <TextField
@@ -57,7 +72,8 @@ const BookForm: React.FC<BookFormProps> = ({ addBook }) => {
                 type="number"
                 value={totalPages}
                 onChange={e => setTotalPages(e.target.value)}
-                required
+                error={!!errors.totalPages}
+                helperText={errors.totalPages}
                 sx={{ flex: '1 1 120px' }}
             />
             <Button variant="contained" type="submit" sx={{ height: 48 }}>

@@ -28,15 +28,27 @@ const BookItem: React.FC<BookItemProps> = ({ book, updateBook }) => {
     const [status, setStatus] = useState<Book['status']>(book.status)
     const [rating, setRating] = useState<number | null>(book.rating)
 
-    // Reset internal state when the book prop changes
+    const [errorPages, setErrorPages] = useState<string>()
+    const [errorRating, setErrorRating] = useState<string>()
+
     useEffect(() => {
         setPagesRead(book.pagesRead)
         setStatus(book.status)
         setRating(book.rating)
+        setErrorPages(undefined)
+        setErrorRating(undefined)
     }, [book])
 
     const handleSave = () => {
-        updateBook({ ...book, pagesRead, status, rating: rating ?? 0 })
+        if (pagesRead < 0 || pagesRead > book.totalPages) {
+            setErrorPages(`Debe estar entre 0 y ${book.totalPages}`)
+            return
+        }
+        if (rating === null || rating === 0) {
+            setErrorRating('No olvides calificar con estrellas.')
+            return
+        }
+        updateBook({ ...book, pagesRead, status, rating })
         setEditing(false)
     }
 
@@ -105,7 +117,12 @@ const BookItem: React.FC<BookItemProps> = ({ book, updateBook }) => {
                             type="number"
                             inputProps={{ min: 0, max: book.totalPages }}
                             value={pagesRead}
-                            onChange={e => setPagesRead(Number(e.target.value))}
+                            onChange={e => {
+                                setPagesRead(Number(e.target.value))
+                                setErrorPages(undefined)
+                            }}
+                            error={!!errorPages}
+                            helperText={errorPages}
                         />
                     ) : (
                         <Typography variant="body2" color="text.secondary">
@@ -143,14 +160,25 @@ const BookItem: React.FC<BookItemProps> = ({ book, updateBook }) => {
                     )}
 
                     {/* Rating */}
-                    <Box>
-                        <Rating
-                            name={`rating-${book.id}`}
-                            value={rating}
-                            onChange={(_, val) => editing && setRating(val)}
-                            readOnly={!editing}
-                            size="small"
-                        />
+                    <Box sx={{ width: '100%' }}>
+                        <Stack spacing={0.5} alignItems="center">
+                            <Rating
+                                name={`rating-${book.id}`}
+                                value={rating}
+                                onChange={(_, val) => {
+                                    if (!editing) return
+                                    setRating(val)
+                                    setErrorRating(undefined)
+                                }}
+                                readOnly={!editing}
+                                size="small"
+                            />
+                            {editing && errorRating && (
+                                <Typography variant="caption" color="error">
+                                    {errorRating}
+                                </Typography>
+                            )}
+                        </Stack>
                     </Box>
                 </Stack>
             </CardContent>
